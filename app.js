@@ -4,6 +4,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const homeRoutes = require('./routes/homeRoutes');
 const keys = require('./config/keys')
+const path = require('path')
 
 mongoose.connect(keys.mongoDB.connectionURI,{useNewUrlParser : true, useUnifiedTopology : true}, ()=>{
     console.log('connected to DB');

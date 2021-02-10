@@ -1,11 +1,11 @@
 const router = require('express').Router();
 const mongoose = require('mongoose');
-const Classroom = require('../models/Classroom');
 const User = require('../models/User')
 
 
 router.get('/classroomList',(req,res,next)=>{
-    const userID = req.body.user;
+    const userID ='lol';
+    console.log('request received');
     User.find({user : userID})
     .then((user)=>{
         return res.status(200).json(user);
