@@ -17,6 +17,10 @@ const ClassroomSchema = new Schema({
     key : {
         type : String,
         required : true
+    },
+    link : {
+        type : String,
+        required : true
     }
 });
 

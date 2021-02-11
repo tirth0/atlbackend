@@ -16,8 +16,8 @@ router.post('/addclassRoom',(req,res,next)=>{
             });
             newUser.save()
             .then(()=>{
-                createClassroom(currentUser,key);
-                return res.status(201).json("Class Created,User Added")
+                const classroom = createClassroom(currentUser,key);
+                return res.status(201).json(classroom)
             })
             .catch(err=>{
                 return res.status(500).json("Server Error");
@@ -27,8 +27,8 @@ router.post('/addclassRoom',(req,res,next)=>{
             user.classroom.push(key);
             user.save()
             .then(()=>{
-                createClassroom(currentUser,key);
-                return res.status(201).json("Class Created")
+                const classroom = createClassroom(currentUser,key);
+                return res.status(201).json(classroom)
             })
             .catch(err=>{
                 return res.status(500)
@@ -45,7 +45,8 @@ const createClassroom = (user,key) =>{
         title : "data Structures and algorithms",
         author : user,
         description : "Assignment for session 2021-2022",
-        key : key
+        key : key,
+        link : `/${key}`
     });
     classroom.save()
     .then(()=>{
@@ -54,6 +55,7 @@ const createClassroom = (user,key) =>{
     .catch((err)=>{
         return err;
     })
+    return classroom;
 }
 
 
@@ -62,28 +64,17 @@ router.post('/classroomList',(req,res,next)=>{
     console.log(userID);
     User.findOne({user : userID})
     .then((user)=>{
+        if (!user){
+            return res.status(200).json([]);
+        }
         const classrooms = user.classroom;
-        let promises = [];
-        let classes = [];
-        classrooms.forEach((elem,id)=>{
-            promises.push(
-                Classroom.findOne({key : elem.key})
-            );
-        });
-
-       Promise.all(promises).then((c)=>{
-            classes.push(c);
-            return c;
-
-       })
-       .then((c)=>{
-           console.log(c);
-           res.status(201).json(c);
-       })
-       .catch((err)=>{
-           return res.status(500).json("Server Error");
-       })
-
+        const promises = Classroom.find({key : { $in: classrooms }}).exec();
+        promises.then((classes)=>{
+            return res.status(201).json(classes);
+        })
+        .catch((err)=>{
+            return res.status(500).json("Server Error");
+        })
     })
     .catch((err)=>{
         return res.status(400).json(err);
