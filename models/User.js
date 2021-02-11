@@ -23,7 +23,9 @@ const UserSchema = new Schema({
         type : String,
         required  : true
     },
-    classroom : [ClassroomSchema]
+    classroom : {
+        type : [String],
+    }
 });
 
 const User = mongoose.model('user',UserSchema);
